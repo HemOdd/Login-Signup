@@ -1,0 +1,19 @@
+{
+  "name": "btm-project-1",
+  "version": "1.0.0",
+  "description": "Login and signup with Express and Mongoose",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "HemOdd",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^3.0.2",
+    "connect-mongo": "^2.0.2",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "mongoose": "^5.3.13",
+    "supervisor": "^0.12.0"
+  }
+}
