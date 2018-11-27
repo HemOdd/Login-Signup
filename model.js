@@ -1,6 +1,8 @@
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const session = require('express-session');
+
 
 /**
 * Schema containing user credentials.

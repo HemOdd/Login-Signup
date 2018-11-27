@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const userModel = require('./model');
+const session = require('express-session');
 
 
 
@@ -45,4 +46,6 @@ module.exports = function (userSchema) {
             next();
         })
     });
+
+
 }
