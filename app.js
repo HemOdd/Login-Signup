@@ -3,11 +3,11 @@ const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
-const controller = require('./routerController')
+// const MongoStore = require('connect-mongo')(session);
+// const controller = require('./routerController')
 
 //Connect to MongoDB.
-mongoose.connect('mongodb://hemad:123H321@ds143163.mlab.com:43163/hm_db');
+mongoose.connect('mongodb://hemad:123Hhem@ds011775.mlab.com:11775/hm_db');
 const db = mongoose.connection;
 
 //Handle MongoDB errors.

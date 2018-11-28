@@ -1,6 +1,6 @@
 const userModel = require('./model');
 const bcrypt = require('bcrypt');
-const session = require('express-session');
+// const session = require('express-session');
 
 
 
@@ -24,15 +24,21 @@ exports.getFunc = function (req, res, next) {
  */  
 exports.postFunc = function (req, res, next) {
 
+  console.log(req.body.name);
+
   if (req.body.email &&
-    req.body.username &&
-    req.body.password) {
+    req.body.name &&
+    req.body.password && req.body.surname && req.body.birthdate) {
   
     let userData = {
       email: req.body.email,
-      username: req.body.username,
-      password: req.body.password
+      name: req.body.name,
+      password: req.body.password,
+      surname: req.body.surname,
+      birthdate: req.body.birthdate
     }
+
+    console.log(userData);
     
     //Create a user in db.
     //The error code 11000 means there is a user with the same email already in db.
@@ -60,18 +66,18 @@ exports.postFunc = function (req, res, next) {
           err.status = 400;
           return next(err);
         } else {
-          return res.render("profile",{name: user.username,mail: user.email});
+          return res.render("profile",{name: user.name,surname: user.surname,email: user.email,birthdate:user.birthdate});
         }
       }
     });
       }
     });
   //Log the user in if there is no authentication error.
-  } else if (req.body.logUser && req.body.logPass) {
-    userModel.authenticate(req.body.logUser, req.body.logPass, function (error, user) {
+  } else if (req.body.logEmail && req.body.logPass) {
+    userModel.authenticate(req.body.logEmail, req.body.logPass, function (error, user) {
       if (error || !user) {
         
-        const err = new Error('Wrong username or password.');
+        const err = new Error('Wrong email or password.');
         err.status = 401;
         return next(err);
       } else {
@@ -87,7 +93,7 @@ exports.postFunc = function (req, res, next) {
           err.status = 400;
           return next(err);
         } else {
-          return res.render("profile",{name: user.username,mail: user.email});
+          return res.render("profile",{name: user.name,mail: user.email});
 
         }
       }
@@ -106,7 +112,7 @@ exports.postEditForm = function (req,res,next){
   if(req.body.name || req.body.password){
 
     if(req.body.name){
-      userModel.findByIdAndUpdate(req.session.userId, {$set:{username:req.body.name}}, {new: true}, (err, doc) => {
+      userModel.findByIdAndUpdate(req.session.userId, {$set:{name:req.body.name}}, {new: true}, (err, doc) => {
         if (err) {
             console.log("Something wrong when updating data!");
         }
@@ -138,7 +144,7 @@ exports.postEditForm = function (req,res,next){
       if (error) {
         return next(error);
       } else {
-        return res.render("profile",{name: user.username,mail: user.email});
+        return res.render("profile",{name: user.name,mail: user.email});
       }
     })
     

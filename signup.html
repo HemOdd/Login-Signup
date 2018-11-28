@@ -15,14 +15,24 @@
 
     <form action="/" method="post">
 
-        <label for="username">Name</label>
-        <input type="text" id="username" name="username" required />
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="surname">Surname</label>
+        <input type="text" id="surname" name="surname" required />
 
         <label for="password">Password</label>
         <input type="password" id="password" name="password" required />
 
         <label for="email">Email</label>
         <input type="email" id="email" name="email" required />
+
+        <label for="birthdate">Birth Date:</label>
+        <input type="date" id="birthdate" name="birthdate"
+            value="2000-12-31"
+            min="1950-01-01" max="2000-12-31">
+
+        
 
         <button>Sign Up</button>
 

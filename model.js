@@ -1,7 +1,7 @@
 
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const session = require('express-session');
+// const bcrypt = require('bcrypt');
+// const session = require('express-session');
 
 
 /**
@@ -16,14 +16,24 @@ let userSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  username: {
+  name: {
     type: String,
     unique: false,
     required: true,
     trim: true
   },
+  surname: {
+    type: String,
+    unique: false,
+    required: true
+  },
   password: {
     type: String,
+    unique: false,
+    required: true
+  },
+  birthdate: {
+    type: Date,
     unique: false,
     required: true
   }
@@ -33,5 +43,4 @@ let userSchema = new mongoose.Schema({
 //These can be later invoked via function calls on the schema directly.
 require('./schemaController')(userSchema)
 
-let User = mongoose.model('User', userSchema);
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);;

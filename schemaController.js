@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const userModel = require('./model');
-const session = require('express-session');
+// const session = require('express-session');
 
 
 
@@ -8,12 +8,12 @@ module.exports = function (userSchema) {
 
     /**
     * Authenticate a user against the database.
-    * @param username - Request object
-    * @param password - Response object
+    * @param name - Input name
+    * @param password - Input password
     * @param callback - next function to be executed.
     */
-    userSchema.statics.authenticate = function (username, password, callback) {
-        this.findOne({ username: username })
+    userSchema.statics.authenticate = function (email, password, callback) {
+        this.findOne({ email: email })
             .exec(function (err, user) {
                 if (err) {
                     return callback(err)

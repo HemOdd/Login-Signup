@@ -1,6 +1,6 @@
 # Login-Signup
 
-A simple signup an login system made with NodeJS.
+A simple signup and login system made with NodeJS.
 
 * Uses MongoDB along with Mongoose as well as MLab sandbox service for database storage.
 * Uses Express for routing.

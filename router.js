@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const User = require('./model');
-const session = require('express-session');
-const path = require('path');
+// const User = require('./model');
+// const session = require('express-session');
+// const path = require('path');
 const controller = require('./routerController')
 
 
