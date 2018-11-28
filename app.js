@@ -3,8 +3,6 @@ const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
-// const MongoStore = require('connect-mongo')(session);
-// const controller = require('./routerController')
 
 //Connect to MongoDB.
 mongoose.connect('mongodb://hemad:123Hhem@ds011775.mlab.com:11775/hm_db');
@@ -51,8 +49,8 @@ app.use(function (err, req, res, next) {
   res.send(err.message);
 });
 
-
+const portNumber = 3000;
 //App can be connected on localhost:3000
-app.listen(3000, function () {
+app.listen(portNumber, function () {
   console.log('App is listening on port 3000');
 });

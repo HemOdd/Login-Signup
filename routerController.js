@@ -1,6 +1,6 @@
 const userModel = require('./model');
 const bcrypt = require('bcrypt');
-// const session = require('express-session');
+const moment = require('moment');
 
 
 
@@ -24,21 +24,24 @@ exports.getFunc = function (req, res, next) {
  */  
 exports.postFunc = function (req, res, next) {
 
-  console.log(req.body.name);
-
   if (req.body.email &&
     req.body.name &&
     req.body.password && req.body.surname && req.body.birthdate) {
-  
+    
+    const currentYear = (new Date()).getFullYear();
+    const date = new Date(req.body.birthdate);
+    const userAge = Math.abs(date.getUTCFullYear() - currentYear);
+    const formatted = moment(date).format('D MMMM YYYY');
+
     let userData = {
       email: req.body.email,
       name: req.body.name,
       password: req.body.password,
       surname: req.body.surname,
-      birthdate: req.body.birthdate
+      birthdate: formatted,
+      age: userAge
     }
-
-    console.log(userData);
+    
     
     //Create a user in db.
     //The error code 11000 means there is a user with the same email already in db.
@@ -66,7 +69,7 @@ exports.postFunc = function (req, res, next) {
           err.status = 400;
           return next(err);
         } else {
-          return res.render("profile",{name: user.name,surname: user.surname,email: user.email,birthdate:user.birthdate});
+          return res.render("profile",{name: user.name,surname: user.surname,email: user.email,birthdate:user.birthdate,age:user.age});
         }
       }
     });
@@ -93,7 +96,8 @@ exports.postFunc = function (req, res, next) {
           err.status = 400;
           return next(err);
         } else {
-          return res.render("profile",{name: user.name,mail: user.email});
+
+          return res.render("profile",{name: user.name,surname: user.surname,email: user.email,birthdate:user.birthdate,age:user.age});
 
         }
       }

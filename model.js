@@ -1,7 +1,10 @@
 
 const mongoose = require('mongoose');
-// const bcrypt = require('bcrypt');
-// const session = require('express-session');
+
+//Import the schema functions.
+//These can be later invoked via function calls on the schema directly.
+require('./schemaController')(userSchema)
+
 
 
 /**
@@ -33,14 +36,16 @@ let userSchema = new mongoose.Schema({
     required: true
   },
   birthdate: {
-    type: Date,
+    type: String,
+    unique: false,
+    required: true
+  },
+  age: {
+    type: String,
     unique: false,
     required: true
   }
 });
 
-//Import the schema functions.
-//These can be later invoked via function calls on the schema directly.
-require('./schemaController')(userSchema)
 
 module.exports = mongoose.model('User', userSchema);;
