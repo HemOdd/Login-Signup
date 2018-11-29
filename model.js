@@ -1,9 +1,7 @@
 
 const mongoose = require('mongoose');
 
-//Import the schema functions.
-//These can be later invoked via function calls on the schema directly.
-require('./schemaController')(userSchema)
+
 
 
 
@@ -12,20 +10,20 @@ require('./schemaController')(userSchema)
 * All of the fields are required.
 * Only email should be unique.
 */
-let userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   email: {
     type: String,
     unique: true,
     required: true,
     trim: true
   },
-  name: {
+  firstName: {
     type: String,
     unique: false,
     required: true,
     trim: true
   },
-  surname: {
+  lastName: {
     type: String,
     unique: false,
     required: true
@@ -35,7 +33,7 @@ let userSchema = new mongoose.Schema({
     unique: false,
     required: true
   },
-  birthdate: {
+  dateOfBirth: {
     type: String,
     unique: false,
     required: true
@@ -47,5 +45,7 @@ let userSchema = new mongoose.Schema({
   }
 });
 
-
+//Import the schema functions.
+//These can be later invoked via function calls on the schema directly.
+require('./schemaController')(userSchema)
 module.exports = mongoose.model('User', userSchema);;

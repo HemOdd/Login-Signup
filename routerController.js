@@ -1,6 +1,8 @@
 const userModel = require('./model');
 const bcrypt = require('bcrypt');
 const moment = require('moment');
+const hashRounds = 10;
+
 
 
 
@@ -35,10 +37,10 @@ exports.postFunc = function (req, res, next) {
 
     let userData = {
       email: req.body.email,
-      name: req.body.name,
+      firstName: req.body.name,
       password: req.body.password,
-      surname: req.body.surname,
-      birthdate: formatted,
+      lastName: req.body.surname,
+      dateOfBirth: formatted,
       age: userAge
     }
     
@@ -69,7 +71,7 @@ exports.postFunc = function (req, res, next) {
           err.status = 400;
           return next(err);
         } else {
-          return res.render("profile",{name: user.name,surname: user.surname,email: user.email,birthdate:user.birthdate,age:user.age});
+          return res.render("profile",{name: user.firstName,surname: user.lastName,email: user.email,birthdate:user.dateOfBirth,age:user.age});
         }
       }
     });
@@ -97,7 +99,7 @@ exports.postFunc = function (req, res, next) {
           return next(err);
         } else {
 
-          return res.render("profile",{name: user.name,surname: user.surname,email: user.email,birthdate:user.birthdate,age:user.age});
+          return res.render("profile",{name: user.firstName,surname: user.lastName,email: user.email,birthdate:user.dateOfBirth,age:user.age});
 
         }
       }
@@ -116,7 +118,7 @@ exports.postEditForm = function (req,res,next){
   if(req.body.name || req.body.password){
 
     if(req.body.name){
-      userModel.findByIdAndUpdate(req.session.userId, {$set:{name:req.body.name}}, {new: true}, (err, doc) => {
+      userModel.findByIdAndUpdate(req.session.userId, {$set:{firstName:req.body.name}}, {new: true}, (err, doc) => {
         if (err) {
             console.log("Something wrong when updating data!");
         }
@@ -127,7 +129,7 @@ exports.postEditForm = function (req,res,next){
 
     if(req.body.password){
 
-      bcrypt.hash(req.body.password, 10, function (err, hash) {
+      bcrypt.hash(req.body.password, hashRounds, function (err, hash) {
         if (err) {
             return next(err);
         }
@@ -148,7 +150,7 @@ exports.postEditForm = function (req,res,next){
       if (error) {
         return next(error);
       } else {
-        return res.render("profile",{name: user.name,mail: user.email});
+        return res.render("profile",{name: user.firstName,surname: user.lastName,email: user.email,birthdate:user.dateOfBirth,age:user.age});
       }
     })
     

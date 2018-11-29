@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt');
-const userModel = require('./model');
-// const session = require('express-session');
+const hashRounds = 10;
 
 
 
@@ -8,7 +7,7 @@ module.exports = function (userSchema) {
 
     /**
     * Authenticate a user against the database.
-    * @param name - Input name
+    * @param email - Input email
     * @param password - Input password
     * @param callback - next function to be executed.
     */
@@ -23,7 +22,12 @@ module.exports = function (userSchema) {
                     return callback(err);
                 }
                 bcrypt.compare(password, user.password, function (err, result) {
-                    if (result === true) {
+
+                    if (err){
+                        const err = new Error('Wrong email or password.');
+                        err.status = 401;
+                        return next(err);
+                    } else if (result) {
                         return callback(null, user);
                     } else {
                         return callback();
@@ -38,7 +42,7 @@ module.exports = function (userSchema) {
     */
     userSchema.pre('save', function (next) {
         let user = this;
-        bcrypt.hash(user.password, 10, function (err, hash) {
+        bcrypt.hash(user.password, hashRounds, function (err, hash) {
             if (err) {
                 return next(err);
             }
