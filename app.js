@@ -3,7 +3,9 @@ const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
-const dotenv = require('dotenv').config();
+const portNumber = 3000;
+require('dotenv').config();
+
 
 //Connect to MongoDB.
 mongoose.connect(process.env.DB_PATH);
@@ -50,7 +52,6 @@ app.use(function (err, req, res, next) {
   res.send(err.message);
 });
 
-const portNumber = 3000;
 //App can be connected on localhost:3000
 app.listen(portNumber, function () {
   console.log('App is listening on port 3000');
