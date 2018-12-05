@@ -5,7 +5,7 @@ exports.hash = function (password, salt) {
   return new Promise((resolve, reject) => {
     bcrypt.hash(password, salt, (err, hashedValue) => {
       if (err) return reject(err)
-      return hashedValue
+       resolve(hashedValue)
     })
   })
 }
@@ -14,7 +14,7 @@ exports.compare = function (expected, hashedValue) {
   return new Promise((resolve, reject) => {
     bcrypt.compare(expected, hashedValue, (err, res) => {
       if (err) return reject(err)
-      return res
+      resolve(res)
     })
   })
 }

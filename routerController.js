@@ -1,26 +1,9 @@
 const userModel = require('./model');
 const bcrypt = require('bcrypt');
 const moment = require('moment');
-const handler = require('./handler')
+// const handler = require('./handler')
 const hashRounds = 10;
 
-
-const makeNewUser = function (inputData) {
-
-  return new Promise((resolve, reject) => {
-
-    userModel.create(inputData, function (error, user) {
-      if (error && error.code === 11000) {
-        reject(new Error('Email is already registered!'))
-      } else if (error ||!user) {
-        reject(new Error('Unknown error'))
-      } else {
-        resolve(user)       
-      }
-    })
-
-  })
-}
 
 /**
  * Get function for execution at root.
@@ -69,84 +52,64 @@ exports.postFunc = function (req, res) {
         age: userAge
       }
 
-      makeNewUser(userData).then((user) => req.session.userId = user._id);
-      
-
-      userModel.findById(req.session.userId).exec((error, user) => {
-        if (error) {
-          reject(error);
+      const newUser = new userModel(userData);
+      newUser.save().then(saved => {
+        req.session.userId = saved._id
+        userModel.findById(req.session.userId)
+          .then(user => res.render("profile", { name: user.firstName, surname: user.lastName, email: user.email, birthdate: user.dateOfBirth, age: user.age }))
+      }).catch(err => {
+        if (err.code === 11000) {
+          res.send('Email is already registered!')
         } else {
-          res.render("profile", { name: user.firstName, surname: user.lastName, email: user.email, birthdate: user.dateOfBirth, age: user.age });
+          res.send('Unknown error at sign up')
         }
-      })
+      });
 
     } else if (req.body.logEmail && req.body.logPass) {
-      const {error: err, data: user} = handler(userModel.authenticate(req.body.logEmail, req.body.logPass));
-      if (err){
-        return reject(new Error("Auth Error"))
-      } else {
-        if (err) {
-          return reject(new Error("Sign up error."))
-        } else {
-          req.session.userId = user._id
-        }
-  
-        userModel.findById(req.session.userId).exec((error, user) => {
-          if (error) {
-            return reject(error);
-          } else {
-            res.render("profile", { name: user.firstName, surname: user.lastName, email: user.email, birthdate: user.dateOfBirth, age: user.age });
-          }
-        })
-      }
+
+      userModel.authenticate(req.body.logEmail, req.body.logPass).then(user => {
+      req.session.userId = user._id
+      userModel.findById(req.session.userId)
+        .catch(err => res.send('Wrong user or pass.'))
+        .then(user => res.render("profile", { name: user.firstName, surname: user.lastName, email: user.email, birthdate: user.dateOfBirth, age: user.age }))
+      })
     }
   })
 }
+      
+exports.postEditForm = function (req,res){
 
+  return new Promise((resolve,reject) => {
+    
+    if(req.body.name){
 
-exports.postEditForm = function (req, res, next) {
-
-  if (req.body.name || req.body.password) {
-
-    if (req.body.name) {
       userModel.findByIdAndUpdate(req.session.userId, { $set: { firstName: req.body.name } }, { new: true }, (err, doc) => {
         if (err) {
-          console.log("Something wrong when updating data!");
+          reject(err)
         }
-
-        console.log(doc);
       });
     }
+    if (req.body.password){
 
-    if (req.body.password) {
+      bcrypt.hash(req.body.password, hashRounds, function (err, hash){
 
-      bcrypt.hash(req.body.password, hashRounds, function (err, hash) {
-        if (err) {
-          return next(err);
+        if(err){
+          reject(err)
+        } else {
+          userModel.findByIdAndUpdate(req.session.userId, { $set: { password: hash } }, { new: true }, (err, doc) => {
+            if (err) {
+              reject(err)
+            }
+          });
         }
-        userModel.findByIdAndUpdate(req.session.userId, { $set: { password: hash } }, { new: true }, (err, doc) => {
-          if (err) {
-            console.log("Something wrong when updating data!");
-          }
 
-          console.log(doc);
-        });
       })
-
-
     }
 
     userModel.findById(req.session.userId)
-      .exec(function (error, user) {
-        if (error) {
-          return next(error);
-        } else {
-          return res.render("profile", { name: user.firstName, surname: user.lastName, email: user.email, birthdate: user.dateOfBirth, age: user.age });
-        }
-      })
-
-  }
-
-
+    .then(user => res.render("profile", { name: user.firstName, surname: user.lastName, email: user.email, birthdate: user.dateOfBirth, age: user.age }))
+    .catch(err => res.send('Error when loading the page'))
+  })
 
 }
+      
