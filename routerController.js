@@ -70,9 +70,8 @@ exports.postFunc = function (req, res) {
       userModel.authenticate(req.body.logEmail, req.body.logPass).then(user => {
       req.session.userId = user._id
       userModel.findById(req.session.userId)
-        .catch(err => res.send('Wrong user or pass.'))
         .then(user => res.render("profile", { name: user.firstName, surname: user.lastName, email: user.email, birthdate: user.dateOfBirth, age: user.age }))
-      })
+      }).catch(err => res.send('Wrong user or pass.'))
     }
   })
 }

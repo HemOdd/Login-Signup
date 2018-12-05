@@ -14,31 +14,29 @@ module.exports = function (userSchema) {
     * @param callback - next function to be executed.
     */
 
-    userSchema.statics.authenticate = function (email, password) {
-        return new Promise((resolve, reject) => {
-            this.findOne({ email: email }).exec(function (err, user) {
-                if (err) {
-                    return reject(err)
-                } else if (!user) {
-                    const err = new Error('User not found.');
-                    err.status = 401;
-                    return reject(err);
+    userSchema.statics.authenticate = async function (email, password) {
+
+        try{
+
+            const {err:err, data:user} = await handler(this.findOne({ email: email }));
+
+            if (err){
+                return new Error('User not found')
+            } else if (user) {
+                const {error:error, data:result} = await handler(bcrypt.compare(password, user.password));
+                if (error){
+                    return new Error('An error occured')
+                } else if(result){
+                    return user
                 }
+            }
 
-                bcrypt.compare(password, user.password, function (err, result) {
+        } catch (error) {
+            return (error);
+        }
 
-                    if (err) {
-                        err.status = 401;
-                        reject(err);
-                    } else if (result) {
-                        resolve(user)
-                    }
-                })
-
-
-            })
-        })
     }
+
 
     /**
     * Hash the password before storage.
