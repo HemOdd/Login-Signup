@@ -2,7 +2,7 @@
 
 A simple signup and login system made with NodeJS.
 
-* Uses MongoDB along with Mongoose as well as MLab sandbox service for database storage.
+* Uses MongoDB for database.
 * Uses Express for routing.
 * Uses bcrypt for password hashing.
 
